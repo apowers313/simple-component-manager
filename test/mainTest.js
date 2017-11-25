@@ -28,7 +28,7 @@ describe("types", function() {
     it("validates registered component");
 });
 
-describe("components", function() {
+describe("register", function() {
     var cm;
     beforeEach(function() {
         cm = new ComponentManager();
@@ -60,19 +60,23 @@ describe("components", function() {
             cm.register(3, testComponent);
         }, TypeError);
     });
+});
+
+describe ("get", function() {
+    var cm;
+    beforeEach(function() {
+        cm = new ComponentManager();
+        cm.registerType("test-type", alwaysTrue);
+        var testComponent = {};
+        cm.register("test-component", "test-type", testComponent);
+    });
 
     it("can get components", function() {
-        var testComponent = {};
-        cm.registerType("test-type", alwaysTrue);
-        cm.register("test-component", "test-type", testComponent);
         var component = cm.get("test-component");
         assert.isObject(component);
     });
 
     it("errors when component name not specified during get", function() {
-        var testComponent = {};
-        cm.registerType("test-type", alwaysTrue);
-        cm.register("test-component", "test-type", testComponent);
         assert.throws(function() {
             cm.get();
         }, TypeError);
@@ -81,6 +85,13 @@ describe("components", function() {
     it("returns undefined when not found", function() {
         var component = cm.get("foo");
         assert.isUndefined(component);
+    });
+});
+
+describe("config", function() {
+    var cm;
+    beforeEach(function() {
+        cm = new ComponentManager();
     });
 
     it("can configure component", function() {
