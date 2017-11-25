@@ -1,12 +1,12 @@
 {
-  "name": "server-framework",
+  "name": "component-manager",
   "version": "0.0.1",
-  "description": "A simple server framework for managing multiple forms of communication",
+  "description": "A simple framework for managing multiple components, their dependencies, and configuration of their features",
   "main": "index.js",
   "scripts": {
     "test": "istanbul cover _mocha",
     "docs": "jsdoc -c ./.jsdoc-conf.json",
-    "publish": "istanbul-coveralls && gh-pages --silent --repo https://$GH_TOKEN@github.com/apowers313/server-framework.git --dist docs"
+    "publish": "istanbul-coveralls && gh-pages --silent --repo https://$GH_TOKEN@github.com/apowers313/component-manager.git --dist docs"
   },
   "keywords": [
     "keyword1",
@@ -16,10 +16,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/apowers313/server-framework"
+    "url": "https://github.com/apowers313/component-manager"
   },
   "bugs": {
-    "url": "https://github.com/apowers313/server-framework/issues",
+    "url": "https://github.com/apowers313/component-manager/issues",
     "email": "apowers@ato.ms"
   },
   "devDependencies": {

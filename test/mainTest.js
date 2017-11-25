@@ -1,233 +1,116 @@
-var ServerFramework = require("../index.js");
+var ComponentManager = require("../index.js").ComponentManager;
 var assert = require("chai").assert;
 var sinon = require("sinon");
 
-describe("comms", function() {
+describe("components", function() {
     it("can register", function() {
-        var sf = new ServerFramework();
-        var commModule = {};
-        sf.registerComm("test-comm", commModule);
+        var cm = new ComponentManager();
+        var testComponent = {};
+        cm.register("test-component", testComponent);
     });
 
+    it("errors when registering component that doesn't inherit from Component class");
+
     it("errors when registering without module", function() {
-        var sf = new ServerFramework();
+        var cm = new ComponentManager();
         assert.throws(function() {
-            sf.registerComm("test-comm");
+            cm.register("test-component");
         }, TypeError);
     });
 
     it("errors when registering without module name", function() {
-        var sf = new ServerFramework();
-        var commModule = {};
+        var cm = new ComponentManager();
+        var testComponent = {};
         assert.throws(function() {
-            sf.registerComm(3, commModule);
+            cm.register(3, testComponent);
         }, TypeError);
     });
 
-    it("can get comms", function() {
-        var sf = new ServerFramework();
-        var commModule = {};
-        sf.registerComm("test-comm", commModule);
-        var comm = sf.getComm("test-comm");
-        assert.isObject(comm);
+    it("can get components", function() {
+        var cm = new ComponentManager();
+        var testComponent = {};
+        cm.register("test-component", testComponent);
+        var component = cm.get("test-component");
+        assert.isObject(component);
     });
 
-    it("errors when comm name not specified during get", function() {
-        var sf = new ServerFramework();
-        var commModule = {};
-        sf.registerComm("test-comm", commModule);
+    it("errors when component name not specified during get", function() {
+        var cm = new ComponentManager();
+        var testComponent = {};
+        cm.register("test-component", testComponent);
         assert.throws(function() {
-            sf.getComm();
+            cm.get();
         }, TypeError);
     });
 
     it("returns undefined when not found", function() {
-        var sf = new ServerFramework();
-        var comm = sf.getComm("foo");
-        assert.isUndefined(comm);
+        var cm = new ComponentManager();
+        var component = cm.get("foo");
+        assert.isUndefined(component);
     });
 
-    it("can configure comm", function() {
-        var sf = new ServerFramework();
+    it("can configure component", function() {
+        var cm = new ComponentManager();
         var spy = sinon.spy();
-        var commModule = {
+        var testComponent = {
             config: spy
         };
-        sf.registerComm("test-comm", commModule);
-        sf.configureComm("test-comm", "feature", true);
+        cm.register("test-component", testComponent);
+        cm.configure("test-component", "feature", true);
         assert(spy.called);
         assert.strictEqual(spy.getCall(0).args[0], "feature");
         assert.strictEqual(spy.getCall(0).args[1], true);
     });
 
     it("config errors when missing feature", function() {
-        var sf = new ServerFramework();
-        var commModule = {
+        var cm = new ComponentManager();
+        var testComponent = {
             config: function() {}
         };
-        sf.registerComm("test-comm", commModule);
+        cm.register("test-component", testComponent);
         assert.throws(function() {
-            sf.configureComm("test-comm");
+            cm.configure("test-component");
         }, TypeError);
     });
 
-    it("config errors when missing comm name", function() {
-        var sf = new ServerFramework();
-        var commModule = {
+    it("config errors when missing component name", function() {
+        var cm = new ComponentManager();
+        var testComponent = {
             config: function() {}
         };
-        sf.registerComm("test-comm", commModule);
+        cm.register("test-component", testComponent);
         assert.throws(function() {
-            sf.configureComm(3, "feature", true);
+            cm.configure(3, "feature", true);
         }, TypeError);
     });
 
-    it("config errors when configuring missing comm", function() {
-        var sf = new ServerFramework();
+    it("config errors when configuring missing component", function() {
+        var cm = new ComponentManager();
         assert.throws(function() {
-            sf.configureComm("foo", "feature", true);
+            cm.configure("foo", "feature", true);
         }, TypeError);
     });
 
-    it("config errors module doesn't allow configuration", function() {
-        var sf = new ServerFramework();
-        var commModule = {};
-        sf.registerComm("test-comm", commModule);
-        assert.throws(function() {
-            sf.configureComm("test-comm", "feature", true);
-        }, Error);
-    });
+    // it("config errors module doesn't allow configuration", function() {
+    //     var cm = new ComponentManager();
+    //     var testComponent = {};
+    //     cm.register("test-component", testComponent);
+    //     assert.throws(function() {
+    //         cm.configure("test-component", "feature", true);
+    //     }, Error);
+    // });
 });
 
-describe("worker", function() {
-    it("can register worker type", function() {
-        var sf = new ServerFramework();
-        sf.registerWorkerType("worker-type", function() {});
-    });
-
-    it("errors when worker type missing function", function() {
-        var sf = new ServerFramework();
-        assert.throws(function() {
-            sf.registerWorkerType("worker-type");
-        }, TypeError);
-    });
-
-    it("errors when worker type missing function", function() {
-        var sf = new ServerFramework();
-        assert.throws(function() {
-            sf.registerWorkerType("worker-type");
-        }, TypeError);
-    });
-
-    it("can get worker type");
-
-    it("can register worker", function() {
-        var sf = new ServerFramework();
-        sf.registerWorker("test-worker", "worker-type", {});
-    });
-
-    it("errors when registering without module", function() {
-        var sf = new ServerFramework();
-        assert.throws(function() {
-            sf.registerWorker("test-worker");
-        }, TypeError);
-    });
-
-    it("errors when registering without module name", function() {
-        var sf = new ServerFramework();
-        assert.throws(function() {
-            sf.registerWorker(3, {});
-        }, TypeError);
-    });
-
-    it("can get", function() {
-        var sf = new ServerFramework();
-        sf.registerWorker("test-worker", {});
-        var worker = sf.getWorker("test-worker");
-        assert.isObject(worker);
-    });
-
-    it("errors when worker name not specified during get", function() {
-        var sf = new ServerFramework();
-        sf.registerWorker("test-worker", {});
-        assert.throws(function() {
-            sf.getWorker();
-        }, TypeError);
-    });
-
-    it("returns undefined when not found", function() {
-        var sf = new ServerFramework();
-        var worker = sf.getWorker("foo");
-        assert.isUndefined(worker);
-    });
-
-    it("can configure", function() {
-        var sf = new ServerFramework();
-        var spy = sinon.spy();
-        var workerModule = {
-            config: spy
-        };
-        sf.registerWorker("test-worker", workerModule);
-        sf.configureWorker("test-worker", "feature", true);
-        assert(spy.called);
-        assert.strictEqual(spy.getCall(0).args[0], "feature");
-        assert.strictEqual(spy.getCall(0).args[1], true);
-    });
-
-    it("config errors when missing feature", function() {
-        var sf = new ServerFramework();
-        var workerModule = {
-            config: function() {}
-        };
-        sf.registerWorker("test-worker", workerModule);
-        assert.throws(function() {
-            sf.configureWorker("test-worker");
-        }, TypeError);
-    });
-
-    it("config errors when missing worker name", function() {
-        var sf = new ServerFramework();
-        var workerModule = {
-            config: function() {}
-        };
-        sf.registerWorker("test-worker", workerModule);
-        assert.throws(function() {
-            sf.configureWorker(3, "feature", true);
-        }, TypeError);
-    });
-
-    it("config errors when configuring missing worker", function() {
-        var sf = new ServerFramework();
-        assert.throws(function() {
-            sf.configureWorker("foo", "feature", true);
-        }, TypeError);
-    });
-
-    it("config errors module doesn't allow configuration", function() {
-        var sf = new ServerFramework();
-        sf.registerWorker("test-worker", {});
-        assert.throws(function() {
-            sf.configureWorker("test-worker", "feature", true);
-        }, Error);
-    });
-});
-
-describe("logger", function() {
-
-});
-
-describe("init", function() {
+describe("lifecycle", function() {
     it("can init", function() {
-        var sf = new ServerFramework();
-        sf.init();
+        var cm = new ComponentManager();
+        cm.init();
     });
 
     it("can shutdown", function() {
-        var sf = new ServerFramework();
-        sf.shutdown();
+        var cm = new ComponentManager();
+        cm.shutdown();
     });
 
-    it("inits comm");
-    it("inits worker");
-    it("inits worker before comm");
+    it("loads dependencies in the right order");
 });
