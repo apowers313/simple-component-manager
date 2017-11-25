@@ -188,6 +188,8 @@ describe("config", function() {
             cm.configure("test-component", "feature", true);
         }, Error);
     });
+
+    it("errors on configuring non-existent feature");
 });
 
 describe("lifecycle", function() {
@@ -204,7 +206,7 @@ describe("lifecycle", function() {
         cm.shutdown();
     });
 
-    it("loads dependencies in the right order");
+    it("loads default logger");
 });
 
 describe("component", function() {
@@ -242,7 +244,7 @@ describe("dependencies", function() {
 
     class C extends Component {}
 
-    it.only("loaded in right order", function() {
+    it("loaded in right order", function() {
         var a = new A();
         // var aSpy = sinon.spy(a.init);
         var b = new B();
