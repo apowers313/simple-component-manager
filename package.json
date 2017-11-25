@@ -1,6 +1,6 @@
 {
-  "name": "component-manager",
-  "version": "0.0.1",
+  "name": "simple-component-manager",
+  "version": "0.8.0",
   "description": "A simple framework for managing multiple components, their dependencies, and configuration of their features",
   "main": "index.js",
   "scripts": {
@@ -9,8 +9,11 @@
     "publish": "istanbul-coveralls && gh-pages --silent --repo https://$GH_TOKEN@github.com/apowers313/component-manager.git --dist docs"
   },
   "keywords": [
-    "keyword1",
-    "keyword2"
+    "component",
+    "ioc",
+    "module",
+    "manager",
+    "dependency"
   ],
   "author": "Adam Powers",
   "license": "MIT",
