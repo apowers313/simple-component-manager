@@ -33,5 +33,7 @@
     "mockery": "^2.0.0",
     "sinon": "^1.17.6"
   },
-  "dependencies": {}
+  "dependencies": {
+    "dependency-graph": "^0.6.0"
+  }
 }
