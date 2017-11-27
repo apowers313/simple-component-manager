@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "istanbul cover _mocha",
-    "docs": "jsdoc -c ./.jsdoc-conf.json",
-    "publish": "istanbul-coveralls && gh-pages --silent --repo https://$GH_TOKEN@github.com/apowers313/component-manager.git --dist docs"
+    "docs": "jsdoc -c ./.jsdoc-conf.json"
   },
   "keywords": [
     "component",
