@@ -12,6 +12,7 @@ describe("types", function() {
     var cm;
     beforeEach(function() {
         cm = new ComponentManager();
+        cm.clear();
     });
 
     it("can be registered", function() {
@@ -34,6 +35,7 @@ describe("register", function() {
     var cm;
     beforeEach(function() {
         cm = new ComponentManager();
+        cm.clear();
     });
 
     it("can register", function() {
@@ -68,6 +70,7 @@ describe("registration validation", function() {
     var cm;
     beforeEach(function() {
         cm = new ComponentManager();
+        cm.clear();
     });
 
     it("of simple type passes", function() {
@@ -111,6 +114,7 @@ describe("get", function() {
     var cm;
     beforeEach(function() {
         cm = new ComponentManager();
+        cm.clear();
         cm.registerType("test-type", alwaysTrue);
         var testComponent = {};
         cm.register("test-component", "test-type", testComponent);
@@ -137,6 +141,7 @@ describe("config", function() {
     var cm;
     beforeEach(function() {
         cm = new ComponentManager();
+        cm.clear();
     });
 
     it("can configure component", function() {
@@ -197,6 +202,7 @@ describe("lifecycle", function() {
     var cm;
     beforeEach(function() {
         cm = new ComponentManager();
+        cm.clear();
     });
 
     it("can init", function() {
@@ -228,6 +234,7 @@ describe("dependencies", function() {
     var cm;
     beforeEach(function() {
         cm = new ComponentManager();
+        cm.clear();
         cm.registerType("test-type", alwaysTrue);
     });
 
@@ -287,6 +294,7 @@ describe("default logger", function() {
     var cm;
     beforeEach(function() {
         cm = new ComponentManager();
+        cm.clear();
         cm.registerType("test-type", alwaysTrue);
         cm.init();
     });
@@ -347,6 +355,7 @@ describe("default logger messages", function() {
     var spy;
     beforeEach(function() {
         cm = new ComponentManager();
+        cm.clear();
         cm.registerType("test-type", alwaysTrue);
         cm.init();
         log = cm.get("logger");
@@ -360,7 +369,7 @@ describe("default logger messages", function() {
         log.config("set-level", "error");
         log.error ("something bad");
         assert(spy.calledOnce, "one message");
-        assert(spy.calledWith("!!! ERROR:", "something bad"), "message format");
+        assert(spy.calledWith("unknown:", "!!! ERROR:", "something bad"), "message format");
         log.warn("will robinson");
         assert(spy.calledOnce, "still one message");
     });
@@ -368,38 +377,38 @@ describe("default logger messages", function() {
     it("error", function() {
         log.error ("something bad");
         assert(spy.calledOnce, "one message");
-        assert(spy.calledWith("!!! ERROR:", "something bad"), "message format");
+        assert(spy.calledWith("unknown:", "!!! ERROR:", "something bad"), "message format");
     });
 
     it("warn", function() {
         log.warn ("will robinson");
         assert(spy.calledOnce, "one message");
-        assert(spy.calledWith("! WARNING:", "will robinson"), "message format");
+        assert(spy.calledWith("unknown:", "! WARNING:", "will robinson"), "message format");
     });
 
     it("info", function() {
         log.info ("info test");
         assert(spy.calledOnce, "one message");
-        assert(spy.calledWith("info test"), "message format");
+        assert(spy.calledWith("unknown:", "info test"), "message format");
     });
 
     it("verbose", function() {
         log.verbose ("verbose test");
         assert(spy.calledOnce, "one message");
-        assert(spy.calledWith("verbose test"), "message format");
+        assert(spy.calledWith("unknown:", "verbose test"), "message format");
     });
 
     it("debug", function() {
         log.debug ("debug test");
         assert(spy.calledOnce, "one message");
-        assert(spy.calledWith("debug test"), "message format");
+        assert(spy.calledWith("unknown:", "debug test"), "message format");
     });
 
     it("silly", function() {
         log.config("set-level", "silly");
         log.silly ("silly test");
         assert(spy.calledOnce, "one message");
-        assert(spy.calledWith("silly test"), "message format");
+        assert(spy.calledWith("unknown:", "silly test"), "message format");
     });
 
     it("silent", function() {
