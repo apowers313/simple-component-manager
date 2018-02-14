@@ -1,6 +1,6 @@
 {
   "name": "simple-component-manager",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "A simple framework for managing multiple components, their dependencies, and configuration of their features",
   "main": "index.js",
   "scripts": {
