@@ -36,6 +36,8 @@
     "sinon": "^1.17.6"
   },
   "dependencies": {
-    "dependency-graph": "^0.6.0"
+    "dependency-graph": "^0.6.0",
+    "npm": "^5.6.0",
+    "strip-json-comments": "^2.0.1"
   }
 }

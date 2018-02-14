@@ -1,6 +1,7 @@
 var ComponentManager = require("../index.js").ComponentManager;
 var Component = require("../index.js").Component;
 var DefaultLogger = require("../index.js").DefaultLogger;
+var ComponentDirector = require("../index.js").ComponentDirector;
 var assert = require("chai").assert;
 var sinon = require("sinon");
 
@@ -301,17 +302,17 @@ describe("default logger", function() {
 
     it("exists", function() {
         var logger = cm.get("logger");
-        assert.instanceOf (logger, DefaultLogger);
+        assert.instanceOf(logger, DefaultLogger);
     });
 
     it("can set level", function() {
         var logger = cm.get("logger");
         logger.config("set-level", "silent");
-        assert.strictEqual (logger.debugLevel, 0);
+        assert.strictEqual(logger.debugLevel, 0);
         logger.config("set-level", "error");
-        assert.strictEqual (logger.debugLevel, 1);
+        assert.strictEqual(logger.debugLevel, 1);
         logger.config("set-level", 4);
-        assert.strictEqual (logger.debugLevel, 4);
+        assert.strictEqual(logger.debugLevel, 4);
     });
 
     it("errors on bad set levels", function() {
@@ -335,17 +336,17 @@ describe("default logger", function() {
         var lvl;
         // default
         lvl = logger.config("get-level");
-        assert.strictEqual (lvl, "debug");
+        assert.strictEqual(lvl, "debug");
 
         // error level
         logger.config("set-level", "error");
         lvl = logger.config("get-level");
-        assert.strictEqual (lvl, "error");
+        assert.strictEqual(lvl, "error");
 
         // silent level
         logger.config("set-level", 0);
         lvl = logger.config("get-level");
-        assert.strictEqual (lvl, "silent");
+        assert.strictEqual(lvl, "silent");
     });
 });
 
@@ -359,7 +360,7 @@ describe("default logger messages", function() {
         cm.registerType("test-type", alwaysTrue);
         cm.init();
         log = cm.get("logger");
-        spy = sinon.spy (console, "log");
+        spy = sinon.spy(console, "log");
     });
     afterEach(function() {
         console.log.restore();
@@ -367,7 +368,7 @@ describe("default logger messages", function() {
 
     it("catches right levels", function() {
         log.config("set-level", "error");
-        log.error ("something bad");
+        log.error("something bad");
         assert(spy.calledOnce, "one message");
         assert(spy.calledWith("unknown:", "!!! ERROR:", "something bad"), "message format");
         log.warn("will robinson");
@@ -375,50 +376,234 @@ describe("default logger messages", function() {
     });
 
     it("error", function() {
-        log.error ("something bad");
+        log.error("something bad");
         assert(spy.calledOnce, "one message");
         assert(spy.calledWith("unknown:", "!!! ERROR:", "something bad"), "message format");
     });
 
     it("warn", function() {
-        log.warn ("will robinson");
+        log.warn("will robinson");
         assert(spy.calledOnce, "one message");
         assert(spy.calledWith("unknown:", "! WARNING:", "will robinson"), "message format");
     });
 
     it("info", function() {
-        log.info ("info test");
+        log.info("info test");
         assert(spy.calledOnce, "one message");
         assert(spy.calledWith("unknown:", "info test"), "message format");
     });
 
     it("verbose", function() {
-        log.verbose ("verbose test");
+        log.verbose("verbose test");
         assert(spy.calledOnce, "one message");
         assert(spy.calledWith("unknown:", "verbose test"), "message format");
     });
 
     it("debug", function() {
-        log.debug ("debug test");
+        log.debug("debug test");
         assert(spy.calledOnce, "one message");
         assert(spy.calledWith("unknown:", "debug test"), "message format");
     });
 
     it("silly", function() {
         log.config("set-level", "silly");
-        log.silly ("silly test");
+        log.silly("silly test");
         assert(spy.calledOnce, "one message");
         assert(spy.calledWith("unknown:", "silly test"), "message format");
     });
 
     it("silent", function() {
         log.config("set-level", "silent");
-        log.error ("test");
-        log.warn ("test");
-        log.info ("test");
-        log.verbose ("test");
-        log.debug ("test");
-        log.silly ("test");
+        log.error("test");
+        log.warn("test");
+        log.info("test");
+        log.verbose("test");
+        log.debug("test");
+        log.silly("test");
         assert(spy.notCalled, "not called during silent");
     });
+});
+
+describe("component director", function() {
+    afterEach(function() {
+        return ComponentDirector.stop();
+    });
+
+    it("start", function() {
+        return ComponentDirector.start()
+            .then((cd) => {
+                assert.instanceOf(cd, ComponentDirector);
+            });
+    });
+
+    it("singleton", function() {
+        var cd1;
+        return ComponentDirector.start()
+            .then((cd) => {
+                cd1 = cd;
+                return ComponentDirector.start();
+            })
+            .then((cd2) => {
+                assert.instanceOf(cd1, ComponentDirector);
+                assert.instanceOf(cd2, ComponentDirector);
+                assert.strictEqual(cd1, cd2);
+            });
+    });
+
+    it("stop", function() {
+        return ComponentDirector.start();
+        // stop called in afterEach
+    });
+
+    it("config loads includes", function() {
+        var config = {
+            includeFiles: [
+                "/etc/config.json",
+                "config.json",
+                "server-config.json"
+            ]
+        };
+        var cd = new ComponentDirector();
+
+
+        var stub = sinon.stub(ComponentDirector, "readConfig");
+        stub
+            .withArgs("/etc/config.json")
+            .returns({
+                includeFiles: [
+                    "config.json"
+                ]
+            });
+        stub
+            .withArgs("config.json")
+            .returns({
+                name: "config"
+            });
+        stub
+            .withArgs("server-config.json")
+            .returns({});
+        var confList = cd.loadConfig(config);
+
+        assert.strictEqual(stub.callCount, 4, "should have tried to load four files");
+        assert.deepEqual(confList, [{
+            includeFiles: ['/etc/config.json', 'config.json', 'server-config.json']
+        }, {
+            includeFiles: ['config.json']
+        }, {
+            name: 'config'
+        }, {
+            name: 'config'
+        }, {}]);
+
+        stub.restore();
+    });
+
+    it("config doesn't fail on missing includes", function() {
+        var config = {
+            includeFiles: [
+                "/etc/config.json",
+                "config.json",
+                "server-config.json"
+            ]
+        };
+        return ComponentDirector.start(config);
+    });
+
+    it("correctly resolves component names", function() {
+        var cd = new ComponentDirector();
+        var packageName;
+        // See also: https://docs.npmjs.com/cli/install
+
+        // simple package
+        packageName = cd.componentResolvePackageName({
+            package: "simple-package"
+        });
+        assert.strictEqual(packageName, "simple-package");
+        // versioned package
+        packageName = cd.componentResolvePackageName({
+            package: "version-package@1.0.0"
+        });
+        assert.strictEqual(packageName, "version-package@1.0.0");
+        // scoped package
+        packageName = cd.componentResolvePackageName({
+            package: "@myorg/scoped-package@1.0.0"
+        });
+        assert.strictEqual(packageName, "@myorg/scoped-package@1.0.0");
+        // TODO: version range
+        // TODO: tag
+        // git ssh without user
+        packageName = cd.componentResolvePackageName({
+            package: "github.com:fido-alliance/fido-2-specs.git"
+        });
+        assert.strictEqual(packageName, "github.com:fido-alliance/fido-2-specs.git");
+        // git ssh with user
+        packageName = cd.componentResolvePackageName({
+            package: "git@github.com:fido-alliance/fido-2-specs.git"
+        });
+        assert.strictEqual(packageName, "git@github.com:fido-alliance/fido-2-specs.git");
+        // git https with .git
+        packageName = cd.componentResolvePackageName({
+            package: "https://github.com/fido-alliance/fido-2-specs.git"
+        });
+        assert.strictEqual(packageName, "https://github.com/fido-alliance/fido-2-specs.git");
+        // git https without .git
+        packageName = cd.componentResolvePackageName({
+            package: "https://github.com/fido-alliance/fido-2-specs"
+        });
+        assert.strictEqual(packageName, "https://github.com/fido-alliance/fido-2-specs");
+        // absolute local .tgz
+        packageName = cd.componentResolvePackageName({
+            package: "/Users/apowers/package.tgz"
+        });
+        assert.strictEqual(packageName, "package");
+        // relative local .tgz
+        packageName = cd.componentResolvePackageName({
+            package: "apowers/package2.tgz"
+        });
+        assert.strictEqual(packageName, "package2");
+        // http .tgz
+        packageName = cd.componentResolvePackageName({
+            package: "http://example.com/foo/bar/webpackage.tgz"
+        });
+        assert.strictEqual(packageName, "webpackage");
+        // https .tgz
+        packageName = cd.componentResolvePackageName({
+            package: "https://example.com/foo/bar/better-webpackage.tgz"
+        });
+        assert.strictEqual(packageName, "better-webpackage");
+        // directory
+        packageName = cd.componentResolvePackageName({
+            package: "test/helpers/comp1"
+        });
+        // directory
+        packageName = cd.componentResolvePackageName({
+            configDir: "test/helpers",
+            package: "comp1"
+        });
+        assert.strictEqual(packageName, "test-package");
+        // empty package name
+        packageName = cd.componentResolvePackageName({
+            configDir: "test/helpers/comp1",
+            package: ""
+        });
+        assert.strictEqual(packageName, "test-package");
+    });
+
+    it("can load config with comments in it");
+
+    it("config load component", function() {
+        this.timeout(30000);
+        this.slow(30000);
+        var config = {
+            components: [{
+                name: "fido-web",
+                package: "test/helpers/comp1",
+                type: "generic"
+            }]
+        };
+        return ComponentDirector.start(config);
+    });
+
+    it("config works with comments");
+    it("fails gracefully on bad config");
 });
