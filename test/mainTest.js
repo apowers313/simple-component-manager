@@ -217,20 +217,6 @@ describe("lifecycle", function() {
     it("loads default logger");
 });
 
-describe("component", function() {
-    it("has init", function() {
-        class Foo extends Component {
-
-        }
-        var foo = new Foo();
-        assert.isFunction(foo.init);
-        foo.init();
-    });
-    it("has shutdown");
-    it("returns empty dependency list");
-    it("errors on config");
-});
-
 describe("dependencies", function() {
     var cm;
     beforeEach(function() {
