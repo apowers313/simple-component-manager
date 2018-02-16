@@ -226,25 +226,31 @@ describe("dependencies", function() {
     });
 
     class A extends Component {
-        dependencies() {
-            return ["B"];
+        constructor(cm) {
+            super(cm);
+            this.addDependency("B");
         }
     }
 
     class B extends Component {
-        dependencies() {
-            return ["C"];
+        constructor(cm) {
+            super(cm);
+            this.addDependency("C");
         }
     }
 
-    class C extends Component {}
+    class C extends Component {
+        constructor(cm) {
+            super(cm);
+        }
+    }
 
     it("loaded in right order", function() {
-        var a = new A();
+        var a = new A(cm);
         // var aSpy = sinon.spy(a.init);
-        var b = new B();
+        var b = new B(cm);
         // var bSpy = sinon.spy(b.init);
-        var c = new C();
+        var c = new C(cm);
         // var cSpy = sinon.spy(c.init);
         cm.register("A", "test-type", a);
         cm.register("B", "test-type", b);
@@ -256,21 +262,22 @@ describe("dependencies", function() {
     });
 
     it("throws correct error on missing dependency", function() {
-        cm.register("A", "test-type", new A());
+        cm.register("A", "test-type", new A(cm));
         assert.throws(function() {
             cm.init();
         }, Error, "'A' cannot find dependency 'B'");
     });
 
     it("fails on cycle", function() {
-        cm.register("A", "test-type", new A());
-        cm.register("B", "test-type", new B());
+        cm.register("A", "test-type", new A(cm));
+        cm.register("B", "test-type", new B(cm));
         class Bad extends Component {
-            dependencies() {
-                return ["A"];
+            constructor(cm) {
+                super(cm)
+                this.addDependency("A");
             }
         }
-        cm.register("C", "test-type", new Bad());
+        cm.register("C", "test-type", new Bad(cm));
         assert.throws(function() {
             cm.init();
         }, Error, "Dependency Cycle Found: A -> B -> C -> A");
@@ -451,7 +458,6 @@ describe("component director", function() {
         };
         var cd = new ComponentDirector();
 
-
         var stub = sinon.stub(ComponentDirector, "readConfig");
         stub
             .withArgs("/etc/config.json")
@@ -474,12 +480,17 @@ describe("component director", function() {
         assert.deepEqual(confList, [{
             includeFiles: ['/etc/config.json', 'config.json', 'server-config.json']
         }, {
+            configDir: "/etc",
             includeFiles: ['config.json']
         }, {
+            configDir: process.cwd(),
             name: 'config'
         }, {
+            configDir: process.cwd(),
             name: 'config'
-        }, {}]);
+        }, {
+            configDir: process.cwd()
+        }]);
 
         stub.restore();
     });
@@ -492,7 +503,12 @@ describe("component director", function() {
                 "server-config.json"
             ]
         };
-        return ComponentDirector.start(config);
+        return ComponentDirector
+            .start(config)
+            .then((cd) => {
+                assert.isUndefined(cd.cm.config.configDir);
+                assert.isUndefined(cd.cm.config.dataDir);
+            });
     });
 
     it("correctly resolves component names", function() {
@@ -577,7 +593,7 @@ describe("component director", function() {
 
     it("can load config with comments in it");
 
-    it("config load component", function() {
+    it.only("config load component", function() {
         this.timeout(30000);
         this.slow(30000);
         var config = {
