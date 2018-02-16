@@ -593,7 +593,7 @@ describe("component director", function() {
 
     it("can load config with comments in it");
 
-    it.only("config load component", function() {
+    it("config load component", function() {
         this.timeout(30000);
         this.slow(30000);
         var config = {
