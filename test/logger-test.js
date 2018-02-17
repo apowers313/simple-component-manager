@@ -11,9 +11,12 @@ describe("default logger", function() {
     var cm;
     beforeEach(function() {
         cm = new ComponentManager();
-        cm.clear();
         cm.registerType("test-type", alwaysTrue);
         cm.init();
+    });
+
+    afterEach(function() {
+        cm.clear();
     });
 
     it("exists", function() {
@@ -72,13 +75,13 @@ describe("default logger messages", function() {
     var spy;
     beforeEach(function() {
         cm = new ComponentManager();
-        cm.clear();
         cm.registerType("test-type", alwaysTrue);
         cm.init();
         log = cm.get("logger");
         spy = sinon.spy(console, "log");
     });
     afterEach(function() {
+        cm.clear();
         console.log.restore();
     });
 

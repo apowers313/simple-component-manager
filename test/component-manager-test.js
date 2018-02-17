@@ -1,7 +1,5 @@
 var ComponentManager = require("../index.js").ComponentManager;
 var Component = require("../index.js").Component;
-var DefaultLogger = require("../index.js").DefaultLogger;
-var ComponentDirector = require("../index.js").ComponentDirector;
 var assert = require("chai").assert;
 var sinon = require("sinon");
 
@@ -180,6 +178,9 @@ describe("lifecycle", function() {
     var cm;
     beforeEach(function() {
         cm = new ComponentManager();
+    });
+
+    afterEach(function() {
         cm.clear();
     });
 
@@ -198,8 +199,11 @@ describe("dependencies", function() {
     var cm;
     beforeEach(function() {
         cm = new ComponentManager();
-        cm.clear();
         cm.registerType("test-type", alwaysTrue);
+    });
+
+    afterEach(function() {
+        cm.clear();
     });
 
     class A extends Component {

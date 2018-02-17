@@ -1,6 +1,7 @@
 var ComponentDirector = require("../index.js").ComponentDirector;
 var assert = require("chai").assert;
 var sinon = require("sinon");
+var fs = require("fs");
 
 describe("component director", function() {
     afterEach(function() {
@@ -59,10 +60,11 @@ describe("component director", function() {
         stub
             .withArgs("server-config.json")
             .returns({});
-        var confList = cd.loadConfig(config);
+        cd.loadConfig(config);
+        var confList = cd.confList;
 
         assert.strictEqual(stub.callCount, 4, "should have tried to load four files");
-        assert.deepEqual(confList, [{
+        assert.deepEqual(confList, [{}, {
             includeFiles: ['/etc/config.json', 'config.json', 'server-config.json']
         }, {
             configDir: "/etc",
@@ -177,6 +179,42 @@ describe("component director", function() {
     });
 
     it("can load config with comments in it");
+
+    it("finds right config dir");
+    it("can set config dir in config", function() {
+        var cd = new ComponentDirector();
+        cd.loadConfig({
+            configDir: "/tmp"
+        });
+        return cd.processConfig()
+            .then(() => {
+                assert.strictEqual(cd.config.configDir, fs.realpathSync("/tmp"));
+            });
+    });
+
+    it("sets data dir when not specified", function() {
+        var cd = new ComponentDirector();
+        cd.loadConfig({
+            configDir: "/tmp"
+        });
+        return cd.processConfig()
+            .then(() => {
+                assert.strictEqual(cd.config.dataDir, fs.realpathSync("/tmp") + "/data");
+            });
+    });
+
+    it("can set data dir in config", function() {
+        var cd = new ComponentDirector();
+        cd.loadConfig({
+            configDir: "/etc",
+            dataDir: "/tmp"
+        });
+        return cd.processConfig()
+            .then(() => {
+                assert.strictEqual(cd.config.configDir, fs.realpathSync("/etc"));
+                assert.strictEqual(cd.config.dataDir, fs.realpathSync("/tmp"));
+            });
+    });
 
     it("config load component", function() {
         this.timeout(30000);
