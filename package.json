@@ -1,6 +1,9 @@
 {
   "name": "simple-component-manager",
-  "version": "0.9.2",
+  "version": "0.9.3",
+  "bin": {
+    "scm": "./bin/scm.js"
+  },
   "description": "A simple framework for managing multiple components, their dependencies, and configuration of their features",
   "main": "index.js",
   "scripts": {
