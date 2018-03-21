@@ -1,3 +1,5 @@
+"use strict";
+
 var ComponentDirector = require("../index.js").ComponentDirector;
 var assert = require("chai").assert;
 var sinon = require("sinon");

@@ -1,3 +1,5 @@
+"use strict";
+
 var ComponentManager = require("../index.js").ComponentManager;
 var DefaultLogger = require("../index.js").DefaultLogger;
 var assert = require("chai").assert;

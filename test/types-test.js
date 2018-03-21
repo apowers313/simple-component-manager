@@ -1,3 +1,5 @@
+"use strict";
+
 var ComponentManager = require("../index.js").ComponentManager;
 var Component = require("../index.js").Component;
 var DefaultLogger = require("../index.js").DefaultLogger;
