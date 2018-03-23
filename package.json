@@ -1,6 +1,6 @@
 {
   "name": "simple-component-manager",
-  "version": "0.9.3",
+  "version": "1.0.0-alpha1",
   "bin": {
     "scm": "./bin/scm.js"
   },
@@ -39,6 +39,7 @@
     "sinon": "^1.17.6"
   },
   "dependencies": {
+    "chownr": "^1.0.1",
     "component-class": "^0.9.2",
     "dependency-graph": "^0.6.0",
     "mkdirp": "^0.5.1",

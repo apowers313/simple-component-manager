@@ -67,16 +67,16 @@ describe("component director", function() {
 
         assert.strictEqual(stub.callCount, 4, "should have tried to load four files");
         assert.deepEqual(confList, [{}, {
-            includeFiles: ['/etc/config.json', 'config.json', 'server-config.json']
+            includeFiles: ["/etc/config.json", "config.json", "server-config.json"]
         }, {
             configDir: "/etc",
-            includeFiles: ['config.json']
+            includeFiles: ["config.json"]
         }, {
             configDir: process.cwd(),
-            name: 'config'
+            name: "config"
         }, {
             configDir: process.cwd(),
-            name: 'config'
+            name: "config"
         }, {
             configDir: process.cwd()
         }]);
@@ -219,8 +219,8 @@ describe("component director", function() {
     });
 
     it("config load component", function() {
-        this.timeout(30000);
-        this.slow(30000);
+        this.timeout(30000); // eslint-disable-line no-invalid-this
+        this.slow(30000); // eslint-disable-line no-invalid-this
         var config = {
             components: [{
                 name: "fido-web",
