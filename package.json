@@ -42,7 +42,7 @@
     "chownr": "^1.0.1",
     "cli-spinner": "^0.2.8",
     "component-class": "1.0.0-alpha1",
-    "component-logger-console": "/Users/apowers/Projects/components/component-logger-console",
+    "component-logger-console": "1.0.0-alpha1",
     "dependency-graph": "^0.6.0",
     "mkdirp": "^0.5.1",
     "npm": "^5.6.0",
