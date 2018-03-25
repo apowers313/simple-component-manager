@@ -1,11 +1,7 @@
 "use strict";
 
 var ComponentManager = require("../index.js").ComponentManager;
-var Component = require("../index.js").Component;
-var DefaultLogger = require("../index.js").DefaultLogger;
-var ComponentDirector = require("../index.js").ComponentDirector;
 var assert = require("chai").assert;
-var sinon = require("sinon");
 
 function alwaysTrue() {
     return true;
@@ -23,7 +19,7 @@ describe("types", function() {
     });
 
     it("can be found", function() {
-        function foo(a, b, c) {}; // jshint ignore:line
+        function foo(a, b, c) {}
         cm.registerType("test-type", foo);
         var f = cm.getType("test-type");
         assert.strictEqual(f, foo);
