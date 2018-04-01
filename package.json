@@ -1,6 +1,6 @@
 {
   "name": "simple-component-manager",
-  "version": "1.0.0-alpha2",
+  "version": "1.0.0",
   "bin": {
     "scm": "./bin/scm.js"
   },
@@ -41,8 +41,8 @@
   "dependencies": {
     "chownr": "^1.0.1",
     "cli-spinner": "^0.2.8",
-    "component-class": "1.0.0-alpha1",
-    "component-logger-console": "1.0.0-alpha1",
+    "component-class": "1.0.0",
+    "component-logger-console": "1.0.0",
     "dependency-graph": "^0.6.0",
     "mkdirp": "^0.5.1",
     "strip-json-comments": "^2.0.1"
