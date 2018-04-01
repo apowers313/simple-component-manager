@@ -45,7 +45,6 @@
     "component-logger-console": "1.0.0-alpha1",
     "dependency-graph": "^0.6.0",
     "mkdirp": "^0.5.1",
-    "npm": "^5.6.0",
     "strip-json-comments": "^2.0.1"
   }
 }
