@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Home - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a><ul class='methods'><li data-type='method'><a href="module.exports.html#clear">clear</a></li><li data-type='method'><a href="module.exports.html#config">config</a></li><li data-type='method'><a href="module.exports.html#get">get</a></li><li data-type='method'><a href="module.exports.html#getType">getType</a></li><li data-type='method'><a href="module.exports.html#init">init</a></li><li data-type='method'><a href="module.exports.html#register">register</a></li><li data-type='method'><a href="module.exports.html#registerType">registerType</a></li><li data-type='method'><a href="module.exports.html#setDataDir">setDataDir</a></li><li data-type='method'><a href="module.exports.html#shutdown">shutdown</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+    
+
+
+
+
+
+
+
+
+
+    
+
+
+    <section class="readme">
+        <article><p><a href="https://travis-ci.org/apowers313/simple-component-manager"><img src="https://travis-ci.org/apowers313/simple-component-manager.svg?branch=master" alt="Build Status"></a> <a href="https://coveralls.io/github/apowers313/simple-component-manager"><img src="https://coveralls.io/repos/github/apowers313/simple-component-manager/badge.svg" alt="Coverage Status"></a></p>
+<p><a href="https://waffle.io/apowers313/simple-component-manager"><img src="https://badge.waffle.io/apowers313/simple-component-manager.svg?columns=all" alt="Waffle.io - Columns and their card count"></a></p>
+<p>Allows you to create software components that you can register </p>
+<h2>Install</h2><pre class="prettyprint source lang-bash"><code>npm install scm</code></pre><h2>Using</h2><p>Define a <code>scm-config.json</code> file and run <code>scm</code> from the command line (or a boot script).</p>
+<h2>About</h2><p>Simple Component Manager (SCM) is an <a href="https://en.wikipedia.org/wiki/Inversion_of_control">Inversion of Control</a> framework for node.js that enables late binding through service locator injection and generic-type injection.</p>
+<p>Whew. That's a mouthfull. What does it actually mean?</p>
+<p>Normally you have to do includes in node.js using <code>require()</code>. If I want to use a database, I have to decide whether I want to <code>require(&quot;mongodb&quot;)</code> or <code>require(&quot;mysql&quot;)</code> when I'm writing my code. And if I want to give the user the choice, I have to write some logic around that and include all the options the user might want to use.</p>
+<p>SCM turns that upside-down. Rather than doing <code>require()</code> you define <code>components</code>, such as a database component and register them with the <code>ComponentManager</code> (typically things are registered automatically through the <code>scm-config.json</code>). Things that use databases could then call <code>ComponentManager.get(&quot;database&quot;)</code> and then use the database withouth caring which database is underneath.</p>
+<p>This is great for databases, loggers, communication protocols, etc. where there are so many choices, so many religions, and no right answers that the only solution is to offer flexibility.</p>
+<h2>scm-config.json</h2><p>The <code>scm-config.json</code> can be located in the local directory, or globally in <code>/etc/scm</code>.</p>
+<p>The most important section of the <code>scm-config.json</code> is the components list, which says which components are needed. Each component object in the list has a <code>name</code>, a <code>type</code>, a <code>package</code> and optionally <code>pre-config</code> and <code>post-config</code> settings. Here is an example of a single component declaration:</p>
+<pre class="prettyprint source lang-json"><code>{
+    &quot;name&quot;: &quot;http&quot;,
+    &quot;type&quot;: &quot;generic&quot;,
+    &quot;package&quot;: &quot;component-web&quot;,
+    &quot;pre-config&quot;: [{
+        &quot;set-port&quot;: 8888
+    }]
+}</code></pre><p>This component declares that it is using the <a href="https://github.com/apowers313/component-web">component-web</a> component, which we will name &quot;http&quot; (that's the name other components will use to find it). It will install the <code>npm</code> package <code>component-web</code> (any <a href="https://docs.npmjs.com/cli/install">valid package name</a> should work, including <code>package@version</code> and <code>/path/to/a/package</code>). Before the <code>init()</code> function of the component is called, the <code>pre-config</code> says that we should call <code>set-port</code> with <code>8888</code>.</p>
+<p>Here is an example of a full <code>scm-config.json</code>.</p>
+<pre class="prettyprint source lang-js"><code>// scm-config
+//
+// this is a JSON file that allows JavaScript-style comments
+{
+    // setuid and setgid are only required if running with sudo
+    // you can delete these lines and run without sudo if your http/https ports don't require special privledges
+    // &quot;setuid&quot;: 1,
+    // &quot;setgid&quot;: 1,
+    &quot;components&quot;: [{
+        &quot;name&quot;: &quot;http&quot;,
+        &quot;type&quot;: &quot;generic&quot;,
+        &quot;package&quot;: &quot;component-web&quot;,
+        &quot;pre-config&quot;: [{
+            &quot;set-port&quot;: 8888
+        }],
+        &quot;post-config&quot;: [{
+            &quot;set-redirect&quot;: {
+                &quot;destProtocol&quot;: &quot;https&quot;,
+                &quot;destPort&quot;: 8443,
+                &quot;destTemporary&quot;: false
+            }
+        }]
+    }, {
+        &quot;name&quot;: &quot;https&quot;,
+        &quot;type&quot;: &quot;generic&quot;,
+        &quot;package&quot;: &quot;component-web&quot;,
+        &quot;pre-config&quot;: [{
+            &quot;set-port&quot;: 8443,
+            &quot;set-https&quot;: true,
+            &quot;set-domain&quot;: &quot;localhost&quot;,
+            &quot;set-body-parser&quot;: &quot;json&quot;,
+            &quot;set-enable-session&quot;: true
+        }, { // demo UI for WebAuthn
+            &quot;add-static&quot;: {
+                &quot;path&quot;: &quot;/&quot;,
+                &quot;dir&quot;: &quot;webauthn-yubiclone&quot;
+            }
+        }, { // serve up swagger UI
+            &quot;add-static&quot;: {
+                &quot;path&quot;: &quot;/swagger&quot;,
+                &quot;dir&quot;: &quot;fido2-swagger&quot;
+            }
+        }]
+    }, {
+        &quot;name&quot;: &quot;cert-manager&quot;,
+        &quot;type&quot;: &quot;generic&quot;,
+        &quot;package&quot;: &quot;component-certs-static&quot;,
+        &quot;pre-config&quot;: [{
+            &quot;set-cert-file&quot;: &quot;data/node_modules/component-certs-static/test/helpers/certs/cert.pem&quot;,
+            &quot;set-key-file&quot;: &quot;data/node_modules/component-certs-static/test/helpers/certs/key.pem&quot;
+        }]
+    }, {
+        &quot;name&quot;: &quot;fido2&quot;,
+        &quot;type&quot;: &quot;generic&quot;,
+        &quot;package&quot;: &quot;/Users/apowers/Projects/fido2-stack/component-fido2&quot;,
+        &quot;pre-config&quot;: [{
+            &quot;enable-dangerous-open-registration&quot;: true,
+            &quot;enable-dangerous-xmit-debug-info&quot;: true,
+            &quot;set-service-name&quot;: &quot;WebAuthn.org&quot;
+        }]
+    }, {
+        &quot;name&quot;: &quot;uds&quot;,
+        &quot;type&quot;: &quot;generic&quot;,
+        &quot;package&quot;: &quot;/Users/apowers/Projects/components/component-uds-json&quot;
+    }, {
+        &quot;name&quot;: &quot;logger&quot;,
+        &quot;type&quot;: &quot;logger&quot;,
+        &quot;package&quot;: &quot;component-logger-winston&quot;,
+        &quot;pre-config&quot;: [{
+            &quot;set-level&quot;: &quot;silly&quot;,
+            &quot;add-transport&quot;: [{
+                // log to the screen...
+                &quot;type&quot;: &quot;console&quot;,
+                &quot;colorize&quot;: true
+            }, {
+                // ...and log to a file
+                // see winston's npm page for more transport configuration options
+                &quot;type&quot;: &quot;file&quot;,
+                &quot;filename&quot;: &quot;scm.log&quot;
+            }]
+        }]
+    }]
+}</code></pre><h2>Custom Components</h2><p>You can define your own components, which can be really anything (even plain-ole Objects or Functions). For convenience functions, you can use the <a href="https://github.com/apowers313/component-class">component-class</a> which also includes a <a href="https://github.com/apowers313/component-class/blob/master/template/template.js">template</a> that shows how to use other components.</p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jun 15 2018 03:05:51 GMT+0000 (UTC) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
