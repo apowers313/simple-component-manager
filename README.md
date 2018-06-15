@@ -2,7 +2,7 @@
 
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/apowers313/simple-component-manager.svg?columns=all)](https://waffle.io/apowers313/simple-component-manager)
 
-Allows you to create software components that you can register 
+Allows you to create software components that you can register, lookup, and combine together at run-time.
 
 ## Install
 
