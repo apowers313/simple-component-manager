@@ -1,6 +1,6 @@
 {
   "name": "simple-component-manager",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "bin": {
     "scm": "./bin/scm.js"
   },
