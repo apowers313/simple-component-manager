@@ -14,6 +14,8 @@ npm install scm
 
 Define a `scm-config.json` file and run `scm` from the command line (or a boot script).
 
+Some initial documentation can be found [here](https://apowers313.github.io/simple-component-manager).
+
 ## About
 
 Simple Component Manager (SCM) is an [Inversion of Control](https://en.wikipedia.org/wiki/Inversion_of_control) framework for node.js that enables late binding through service locator injection and generic-type injection.
