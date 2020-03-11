@@ -49,14 +49,20 @@
         <article><p><a href="https://travis-ci.org/apowers313/simple-component-manager"><img src="https://travis-ci.org/apowers313/simple-component-manager.svg?branch=master" alt="Build Status"></a> <a href="https://coveralls.io/github/apowers313/simple-component-manager"><img src="https://coveralls.io/repos/github/apowers313/simple-component-manager/badge.svg" alt="Coverage Status"></a></p>
 <p><a href="https://waffle.io/apowers313/simple-component-manager"><img src="https://badge.waffle.io/apowers313/simple-component-manager.svg?columns=all" alt="Waffle.io - Columns and their card count"></a></p>
 <p>Allows you to create software components that you can register, lookup, and combine together at run-time.</p>
-<h2>Install</h2><pre class="prettyprint source lang-bash"><code>npm install scm</code></pre><h2>Using</h2><p>Define a <code>scm-config.json</code> file and run <code>scm</code> from the command line (or a boot script).</p>
+<h2>Install</h2>
+<pre class="prettyprint source lang-bash"><code>npm install scm
+</code></pre>
+<h2>Using</h2>
+<p>Define a <code>scm-config.json</code> file and run <code>scm</code> from the command line (or a boot script).</p>
 <p>Some initial documentation can be found <a href="https://apowers313.github.io/simple-component-manager">here</a>.</p>
-<h2>About</h2><p>Simple Component Manager (SCM) is an <a href="https://en.wikipedia.org/wiki/Inversion_of_control">Inversion of Control</a> framework for node.js that enables late binding through service locator injection and generic-type injection.</p>
+<h2>About</h2>
+<p>Simple Component Manager (SCM) is an <a href="https://en.wikipedia.org/wiki/Inversion_of_control">Inversion of Control</a> framework for node.js that enables late binding through service locator injection and generic-type injection.</p>
 <p>Whew. That's a mouthfull. What does it actually mean?</p>
 <p>Normally you have to do includes in node.js using <code>require()</code>. If I want to use a database, I have to decide whether I want to <code>require(&quot;mongodb&quot;)</code> or <code>require(&quot;mysql&quot;)</code> when I'm writing my code. And if I want to give the user the choice, I have to write some logic around that and include all the options the user might want to use.</p>
 <p>SCM turns that upside-down. Rather than doing <code>require()</code> you define <code>components</code>, such as a database component and register them with the <code>ComponentManager</code> (typically things are registered automatically through the <code>scm-config.json</code>). Things that use databases could then call <code>ComponentManager.get(&quot;database&quot;)</code> and then use the database withouth caring which database is underneath.</p>
 <p>This is great for databases, loggers, communication protocols, etc. where there are so many choices, so many religions, and no right answers that the only solution is to offer flexibility.</p>
-<h2>scm-config.json</h2><p>The <code>scm-config.json</code> can be located in the local directory, or globally in <code>/etc/scm</code>.</p>
+<h2>scm-config.json</h2>
+<p>The <code>scm-config.json</code> can be located in the local directory, or globally in <code>/etc/scm</code>.</p>
 <p>The most important section of the <code>scm-config.json</code> is the components list, which says which components are needed. Each component object in the list has a <code>name</code>, a <code>type</code>, a <code>package</code> and optionally <code>pre-config</code> and <code>post-config</code> settings. Here is an example of a single component declaration:</p>
 <pre class="prettyprint source lang-json"><code>{
     &quot;name&quot;: &quot;http&quot;,
@@ -65,7 +71,9 @@
     &quot;pre-config&quot;: [{
         &quot;set-port&quot;: 8888
     }]
-}</code></pre><p>This component declares that it is using the <a href="https://github.com/apowers313/component-web">component-web</a> component, which we will name &quot;http&quot; (that's the name other components will use to find it). It will install the <code>npm</code> package <code>component-web</code> (any <a href="https://docs.npmjs.com/cli/install">valid package name</a> should work, including <code>package@version</code> and <code>/path/to/a/package</code>). Before the <code>init()</code> function of the component is called, the <code>pre-config</code> says that we should call <code>set-port</code> with <code>8888</code>.</p>
+}
+</code></pre>
+<p>This component declares that it is using the <a href="https://github.com/apowers313/component-web">component-web</a> component, which we will name &quot;http&quot; (that's the name other components will use to find it). It will install the <code>npm</code> package <code>component-web</code> (any <a href="https://docs.npmjs.com/cli/install">valid package name</a> should work, including <code>package@version</code> and <code>/path/to/a/package</code>). Before the <code>init()</code> function of the component is called, the <code>pre-config</code> says that we should call <code>set-port</code> with <code>8888</code>.</p>
 <p>Here is an example of a full <code>scm-config.json</code>.</p>
 <pre class="prettyprint source lang-js"><code>// scm-config
 //
@@ -149,7 +157,10 @@
             }]
         }]
     }]
-}</code></pre><h2>Custom Components</h2><p>You can define your own components, which can be really anything (even plain-ole Objects or Functions). For convenience functions, you can use the <a href="https://github.com/apowers313/component-class">component-class</a> which also includes a <a href="https://github.com/apowers313/component-class/blob/master/template/template.js">template</a> that shows how to use other components.</p></article>
+}
+</code></pre>
+<h2>Custom Components</h2>
+<p>You can define your own components, which can be really anything (even plain-ole Objects or Functions). For convenience functions, you can use the <a href="https://github.com/apowers313/component-class">component-class</a> which also includes a <a href="https://github.com/apowers313/component-class/blob/master/template/template.js">template</a> that shows how to use other components.</p></article>
     </section>
 
 
@@ -162,7 +173,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jun 15 2018 03:19:46 GMT+0000 (UTC) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Wed Mar 11 2020 22:24:08 GMT+0000 (UTC) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
