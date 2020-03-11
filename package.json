@@ -45,7 +45,7 @@
     "component-class": "^2.0.0",
     "component-logger-console": "^1.0.2",
     "dependency-graph": "^0.6.0",
-    "mkdirp": "^0.5.1",
+    "mkdirp": "^1.0.0",
     "strip-json-comments": "^2.0.1"
   }
 }
